@@ -4,7 +4,7 @@
 RootModule = 'PSGit.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.0'
+ModuleVersion = '2.0.3'
 
 # ID used to uniquely identify this module
 GUID = 'df52529c-a328-4ee1-b52c-839646292588'
@@ -40,7 +40,7 @@ Description = 'A PowerShell implementation of Git, providing a new command-line 
 # ProcessorArchitecture = ''
 
 # Modules that must be imported into the global environment prior to importing this module
-# RequiredModules = @()
+RequiredModules = @(@{ModuleName="Configuration"; ModuleVersion="0.9"})
 
 # Assemblies that must be loaded prior to importing this module
 RequiredAssemblies = 'lib\LibGit2Sharp.dll'
@@ -49,10 +49,10 @@ RequiredAssemblies = 'lib\LibGit2Sharp.dll'
 # ScriptsToProcess = @()
 
 # Type files (.ps1xml) to be loaded when importing this module
-# TypesToProcess = @()
+TypesToProcess = @("PSGit.types.ps1xml")
 
 # Format files (.ps1xml) to be loaded when importing this module
-# FormatsToProcess = @()
+FormatsToProcess = @("PSGit.formats.ps1xml")
 
 # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
 # NestedModules = @()
@@ -76,7 +76,7 @@ AliasesToExport = '*'
 # ModuleList = @()
 
 # List of all files packaged with this module
-# FileList = @()
+FileList = @()
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
 PrivateData = @{
@@ -96,7 +96,11 @@ PrivateData = @{
         # IconUri = ''
 
         # ReleaseNotes of this module
-        ReleaseNotes = 'https://github.com/PoshCode/PSGit/blob/master/ReleaseNotes.md'
+        ReleaseNotes = '
+            Added a PowerLine function
+            Upgraded to Configuration 0.9 to get the UTF8 encoding
+        '
+
 
     } # End of PSData hashtable
 

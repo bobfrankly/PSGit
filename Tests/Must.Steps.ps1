@@ -17,10 +17,6 @@ function Must {
         [Switch]
         $Any,
 
-        # [Parameter(ParameterSetName='ScriptBlockSet', Mandatory=$true, Position=0)]
-        # [scriptblock]
-        # ${FilterScript},
-
         [Parameter(Position=0)]
         [AllowEmptyString()][AllowNull()]
         [System.Object]
@@ -32,34 +28,27 @@ function Must {
         ${Value},
 
         [Parameter(ParameterSetName='equal', Mandatory=$true)]
-        [Alias('IEQ')]
-        [Alias('BeEqualTo')]
-        [Alias('Equal')]
+        [Alias('IEQ','BeEqualTo','Equal')]
         [switch]
-        ${EQ},
+        ${EQ} ,
 
         [Parameter(ParameterSetName='equal (case-sensitive)', Mandatory=$true)]
-        [Alias('BeExactlyEqualTo')]
-        [Alias('EqualExactly')]
+        [Alias('BeExactlyEqualTo','EqualExactly')]
         [switch]
         ${CEQ},
 
         [Parameter(ParameterSetName='not equal', Mandatory=$true)]
-        [Alias('INE')]
-        [Alias('NotBeEqualTo')]
-        [Alias('NotEqual')]
+        [Alias('INE','NotBeEqualTo','NotEqual')]
         [switch]
         ${NE},
 
         [Parameter(ParameterSetName='not equal (case-sensitive)', Mandatory=$true)]
-        [Alias('NotBeExactlyEqualTo')]
-        [Alias('NotExactlyEqual')]
+        [Alias('NotBeExactlyEqualTo','NotExactlyEqual')]
         [switch]
         ${CNE},
 
         [Parameter(ParameterSetName='be greater than', Mandatory=$true)]
-        [Alias('IGT')]
-        [Alias('BeGreaterThan')]
+        [Alias('IGT','BeGreaterThan')]
         [switch]
         ${GT},
 
@@ -69,8 +58,7 @@ function Must {
         ${CGT},
 
         [Parameter(ParameterSetName='be less than', Mandatory=$true)]
-        [Alias('ILT')]
-        [Alias('BeLessThan')]
+        [Alias('ILT','BeLessThan')]
         [switch]
         ${LT},
 
@@ -80,8 +68,7 @@ function Must {
         ${CLT},
 
         [Parameter(ParameterSetName='not be less than', Mandatory=$true)]
-        [Alias('NotBeLessThan')]
-        [Alias('IGE')]
+        [Alias('NotBeLessThan','IGE')]
         [switch]
         ${GE},
 
@@ -91,8 +78,7 @@ function Must {
         ${CGE},
 
         [Parameter(ParameterSetName='not be greater than', Mandatory=$true)]
-        [Alias('ILE')]
-        [Alias('NotBeGreaterThan')]
+        [Alias('ILE','NotBeGreaterThan')]
         [switch]
         ${LE},
 
@@ -102,8 +88,7 @@ function Must {
         ${CLE},
 
         [Parameter(ParameterSetName='be like', Mandatory=$true)]
-        [Alias('ILike')]
-        [Alias('BeLike')]
+        [Alias('ILike','BeLike')]
         [switch]
         ${Like},
 
@@ -113,8 +98,7 @@ function Must {
         ${CLike},
 
         [Parameter(ParameterSetName='not be like', Mandatory=$true)]
-        [Alias('NotBeLike')]
-        [Alias('INotLike')]
+        [Alias('NotBeLike','INotLike')]
         [switch]
         ${NotLike},
 
@@ -149,8 +133,7 @@ function Must {
         ${Contains},
 
         [Parameter(ParameterSetName='contain (case-sensitive)', Mandatory=$true)]
-        [Alias('ContainsExactly')]
-        [Alias('ContainExactly')]
+        [Alias('ContainsExactly','ContainExactly')]
         [switch]
         ${CContains},
 
@@ -160,14 +143,12 @@ function Must {
         ${NotContains},
 
         [Parameter(ParameterSetName='not contain (case-sensitive)', Mandatory=$true)]
-        [Alias('NotContainsExactly')]
-        [Alias('NotContainExactly')]
+        [Alias('NotContainsExactly','NotContainExactly')]
         [switch]
         ${CNotContains},
 
         [Parameter(ParameterSetName='be in', Mandatory=$true)]
-        [Alias('IIn')]
-        [Alias('BeIn')]
+        [Alias('IIn','BeIn')]
         [switch]
         ${In},
 
@@ -177,8 +158,7 @@ function Must {
         ${CIn},
 
         [Parameter(ParameterSetName='not be in', Mandatory=$true)]
-        [Alias('INotIn')]
-        [Alias('NotBeIn')]
+        [Alias('INotIn','NotBeIn')]
         [switch]
         ${NotIn},
 
@@ -278,7 +258,7 @@ begin
                 }
             } 
             end  {
-                $TestResult = if($BeNullOrEmpty -and $TestResults.Count -eq 0) {
+                $TestResult = if($BeNullOrEmpty -and 0 -eq $TestResults.Count) {
                     Write-Verbose "EMPTY!"
                     $True
                 } elseif($All) {
@@ -306,18 +286,18 @@ begin
                     if(!$BeNullOrEmpty) {
                         $message += "'$($Value -join "','")'"
                     }
-                    $message += if($FailedValues -eq $null) {
+                    $message += if($null -eq $FailedValues) {
                                     '-- Actual: $null'
-                                } elseif($FailedValues.Count -eq 0) {
+                                } elseif(0 -eq $FailedValues.Count) {
                                     '-- Actual: {}'
-                                } elseif($FailedValues.Count -gt 1) { 
-                                    "-- Actual: {" + ( $FailedValues  -join ", ") + "}" 
-                                } elseif($FailedValues[0] -eq $null) {
+                                } elseif(1 -le $FailedValues.Count) {
+                                    "-- Actual: {" + ( $FailedValues  -join ", ") + "}"
+                                } elseif($null -eq $FailedValues[0]) {
                                     '-- Actual: $null'
-                                } elseif($FailedValues[0].ToString() -eq $FailedValues[0].GetType().FullName ) { 
-                                    "-- Actual: '" + ( $FailedValues | Out-String ) + "'" 
+                                } elseif($FailedValues[0].ToString() -eq $FailedValues[0].GetType().FullName ) {
+                                    "-- Actual: '" + ( $FailedValues | Out-String ) + "'"
                                 } else {
-                                    "-- Actual: '" + $FailedValues[0] + "'" 
+                                    "-- Actual: '" + $FailedValues[0] + "'"
                                 }
 
                     $exception = New-Object AggregateException ($message -join " ")
@@ -336,12 +316,12 @@ begin
             $InputObject | ft | out-string | % Trim | Write-Verbose
             $scriptCmd = {& $ForEachObjectCommand {
                                 [PSCustomObject]@{ 
-                                    Result = if($InputObject -eq $null){
+                                    Result = if($null -eq $InputObject){
                                                 Write-Verbose "NULL Object, no $Property to look at"
                                                 $false
                                              } elseif($InputObject.$Property -is [System.Collections.IList]) {
                                                 Write-Verbose "List $Property"
-                                                ($InputObject.$Property).Count -eq 0 
+                                                0 -eq ($InputObject.$Property).Count
                                              } elseif($InputObject.$Property -is [string] ) {
                                                 Write-Verbose "String $Property"
                                                 [string]::IsNullOrEmpty($InputObject.$Property)
@@ -351,7 +331,7 @@ begin
                                                 Write-Verbose "Is NULL? PROPERTY: $Property"
                                                 # Write-Debug ($InputObject."$Property".PSTypeNames -join "`n")
                                                  
-                                                $InputObject."$Property" -eq $null
+                                                $null -eq $InputObject."$Property"
                                                 Write-Verbose "Is NULL? PROPERTY: $Property"
                                              }  
                                     Value = $InputObject
@@ -360,9 +340,11 @@ begin
                          }
         } else {
 
-            $scriptCmd = {& $ForEachObjectCommand { 
+            $scriptCmd = {& $ForEachObjectCommand {
+                                Write-Verbose "Input Object is a $($InputObject.GetType().FullName)"
+                                Write-Verbose "Parameters: `n$($Parameters | Out-String)"
                                 [PSCustomObject]@{ 
-                                    Result = (($InputObject | Where-Object @Parameters) -ne $null)
+                                    Result = ($null -ne (Where-Object -Input $InputObject @Parameters))
                                     Value = $InputObject
                                 }
                             } | Throw-Failure -Operator $PSCmdlet.ParameterSetName -Any:$Any -All:$All -Not:$Not -BeNullOrEmpty:$BeNullOrEmpty
@@ -391,7 +373,6 @@ process
         throw
     }
 }
-
 end
 {
     try {
@@ -405,35 +386,7 @@ end
     }
 }
 <#
-
 .ForwardHelpTargetName Where-Object
 .ForwardHelpCategory Cmdlet
-
 #>
 }
-
-
-# function Must {
-#    [CmdletBinding(DefaultParameterSetName = 'Be')]
-#    param(
-
-
-#       $lt,
-#       $le,
-#       $gt,
-#       $ge,
-#       $eq,
-#       $ne
-#    )
-
-#    $all = @(
-#       if($lt) { $Version -lt $lt }
-#       if($gt) { $Version -gt $gt }
-#       if($le) { $Version -le $le }
-#       if($ge) { $Version -ge $ge }
-#       if($eq) { $Version -eq $eq }
-#       if($ne) { $Version -ne $ne }
-#    )
-
-#    $all -notcontains $false
-# }
